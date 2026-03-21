@@ -1,5 +1,5 @@
 import "./globals.css"
-import { AppNav } from "@/components_old/app-nav"
+import { AppNav } from "@/components/app-nav"
 
 export const metadata = {
   title: "CobroPro",
