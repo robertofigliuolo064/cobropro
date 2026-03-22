@@ -1,4 +1,8 @@
+export const dynamic = "force-dynamic"
+
 import Link from "next/link"
+
+
 import { prisma } from "@/lib/prisma";
 
 export default async function ClientsPage() {
