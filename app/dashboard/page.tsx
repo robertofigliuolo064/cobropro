@@ -3,11 +3,7 @@ import { auth } from "@/auth"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 export default async function DashboardPage() {
-  const session = await auth()
-
-  if (!session?.user) {
-    return <div>No autenticado</div>
-  }
+  
 const charges = await prisma.charge.findMany()
 
 const recentCharges = await prisma.charge.findMany({
@@ -36,8 +32,7 @@ const paidCount = charges.filter((c) => c.paid).length
     <main className="space-y-6">
   <div>
     <h1 className="text-2xl font-semibold">Dashboard</h1>
-    <p>Hola, {session.user.name ?? "usuario"}</p>
-    <p>{session.user.email}</p>
+   <p className="text-gray-600">Resumen general de cobros</p>
   </div>
 
   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
