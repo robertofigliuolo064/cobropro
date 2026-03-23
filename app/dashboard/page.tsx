@@ -7,7 +7,7 @@ export default async function DashboardPage() {
 const charges = await prisma.charge.findMany()
 
 const recentCharges = await prisma.charge.findMany({
-  orderBy: { createdAt: "desc" },
+  orderBy: { dueDate: "desc" },
   take: 5,
   include: {
     client: true,
