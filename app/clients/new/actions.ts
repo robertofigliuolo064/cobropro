@@ -36,5 +36,5 @@ export async function createClient(formData: FormData) {
   })
 
   revalidatePath("/clients")
-  redirect("/clients")
+  redirect("/dashboard")
 }
