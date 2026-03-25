@@ -76,6 +76,14 @@ export default async function ClientPage({ params }: ClientPageProps) {
     <div className="space-y-6">
      <div>
   <h1 className="text-2xl font-semibold">{client.name}</h1>
+  
+  
+  <Link
+  href={`/clients/${client.id}/edit`}
+  className="inline-block mt-2 text-sm text-gray-600 underline"
+>
+  Editar cliente
+</Link>
 
   {client.charges.length === 0 ? (
   <form action={deleteClient} className="mt-2">
@@ -149,7 +157,12 @@ export default async function ClientPage({ params }: ClientPageProps) {
                       </span>
                     ) : null}
                   </div>
-
+<Link
+  href={`/charges/${charge.id}/edit`}
+  className="inline-block text-sm text-gray-600 underline mr-3"
+>
+  Editar
+</Link>
                   <form action={markChargeAsPaid} className="mt-2">
                     <input type="hidden" name="chargeId" value={charge.id} />
                     <input type="hidden" name="clientId" value={client.id} />

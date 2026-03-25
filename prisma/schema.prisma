@@ -14,25 +14,24 @@ model User {
   emailVerified DateTime?
   image         String?
   accounts      Account[]
-  sessions      Session[]
   clients       Client[]
+  sessions      Session[]
 }
 
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?
-  access_token       String?
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?
-  session_state      String?
-
-  user User @relation(fields: [userId], references: [id])
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -42,29 +41,37 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-
-  user User @relation(fields: [userId], references: [id])
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Client {
-  id     String  @id @default(cuid())
-  name   String
-  email  String?
-  phone  String?
-
-  userId String
-  user   User @relation(fields: [userId], references: [id])
-
-  charges Charge[]
+  id        String   @id @default(cuid())
+  name      String
+  email     String?
+  phone     String?
+  createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+  userId    String
+  charges   Charge[]
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Charge {
-  id       String   @id @default(cuid())
-  concept  String
-  amount   Float
-  paid     Boolean  @default(false)
-  dueDate  DateTime?
+  id        String    @id @default(cuid())
+  concept   String
+  amount    Float
+  dueDate   DateTime?
+  paid      Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime
+  clientId  String
+  client    Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+}
 
-  clientId String
-  client   Client @relation(fields: [clientId], references: [id])
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
 }

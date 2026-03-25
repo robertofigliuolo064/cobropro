@@ -1,18 +1,25 @@
+export const revalidate = 60
 import Link from "next/link"
 import { auth } from "@/auth"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 export default async function DashboardPage() {
-  
-const charges = await prisma.charge.findMany()
+const session = await auth()
 
-const recentCharges = await prisma.charge.findMany({
-  orderBy: { dueDate: "desc" },
-  take: 5,
-  include: {
-    client: true,
-  },
-})
+if (!session) {
+  redirect("/api/auth/signin")
+}  
+const [charges, recentCharges] = await Promise.all([
+  prisma.charge.findMany(),
+  prisma.charge.findMany({
+    orderBy: { dueDate: "desc" },
+    take: 5,
+    include: {
+      client: true,
+    },
+  }),
+])
+  
 const pendingTotal = charges
   .filter((c) => !c.paid)
   .reduce((sum, c) => sum + c.amount, 0)

@@ -48,6 +48,7 @@ const dueDate = dueDateValue
       amount,
       dueDate,
       clientId: client.id,
+      updatedAt: new Date(),
     },
   })
 

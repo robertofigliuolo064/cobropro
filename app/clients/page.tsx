@@ -1,5 +1,4 @@
-export const dynamic = "force-dynamic"
-export const revalidate = 0
+export const revalidate = 60
 
 import Link from "next/link"
 import { prisma } from "@/lib/prisma"
@@ -9,21 +8,21 @@ export default async function ClientsPage() {
   const session = await auth()
   const userEmail = session?.user?.email ?? "test@test.com"
 
-  const user = await prisma.user.upsert({
-    where: { email: userEmail },
-    update: {},
-    create: {
-      email: userEmail,
-      name: "Test",
-    },
+  const user = await prisma.user.findUnique({
+  where: { email: userEmail },
+ include: {
+  clients: {
     include: {
-      clients: {
-        include: {
-          charges: true,
-        },
+      _count: {
+        select: { charges: true },
       },
     },
-  })
+  },
+},
+})
+
+if (!user) return null
+   
 
   const clients = user.clients ?? []
 
@@ -69,14 +68,14 @@ export default async function ClientsPage() {
             {client.phone && <div>{client.phone}</div>}
 
             <div className="text-sm text-gray-500 mt-2">
-              {client.charges.length} cobros
+             {client._count.charges} cobros
             </div>
 
-            {client.charges.length > 0 && (
-              <div className="text-xs text-gray-400 mt-1">
-                No se puede eliminar mientras tenga cobros
-              </div>
-            )}
+           {client._count.charges > 0 && (
+  <div className="text-xs text-gray-400 mt-1">
+    No se puede eliminar mientras tenga cobros
+  </div>
+)} 
           </li>
         ))}
       </ul>
